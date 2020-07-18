@@ -5,7 +5,7 @@ require('./database');
 //Funcion principal que ejecuta el programa
 async function main (){
     await app.listen(app.get('port'));
-    console.log('Server on port 4000');
+    console.log('Server on port ',app.get('port'));
 }
 
 
