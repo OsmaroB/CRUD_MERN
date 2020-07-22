@@ -1,15 +1,28 @@
 import React, { Component } from 'react'
 import axios from 'axios';
-
+import DatePicker from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css'
 
 export default class CreateNote extends Component {
 
     state = {
-        users:[]
+        users:[],
+        userSelected: '',
+        title:'',
+        content:'',
+        date: new Date()
     }
 
     onSubmit = async (e) =>{
         e.preventDefault();
+        const newNote ={
+            title: this.state.title,
+            content: this.state.content,
+            date: this.state.date,
+            author: this.state.userSelected
+        }
+        await axios.post('http://localhost:4000/api/notes',newNote)
+        window.location.href='/';
     }
 
     async componentDidMount() {//Manipular componente despues de montado
@@ -21,10 +34,15 @@ export default class CreateNote extends Component {
 
     onInputChange =  e =>{
         this.setState({
-            userSelected: e.target.value
+            [e.target.name]: e.target.value
         })
     }   
 
+    onChangeDate = date =>{
+        this.setState({
+            date: date
+        })
+    }
 
     render() {
         return (
@@ -53,10 +71,29 @@ export default class CreateNote extends Component {
                             </div>
                             <div className="form-group">
                                 <input 
-                                type="text" 
-                                placeholder="Title" 
-                                name="title" 
-                                className="form-control"/>
+                                    type="text" 
+                                    placeholder="Title" 
+                                    name="title" 
+                                    className="form-control"
+                                    required    
+                                    onChange={this.onInputChange}
+                                />
+                            </div>
+                            <div className="form-group">
+                                <textarea 
+                                    name="content" 
+                                    className="form-control"
+                                    placeholder="content"
+                                    required
+                                    onChange={this.onInputChange}
+                                    ></textarea>
+                            </div>
+                            <div className="form-group">
+                                <DatePicker 
+                                    className="form-control"
+                                    selected={this.state.date} 
+                                    onChange={this.onChangeDate}
+                                />
                             </div>
                             <button className="btn btn-primary" type="submit">Save</button>
                         </form>
